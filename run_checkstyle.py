@@ -122,7 +122,7 @@ def crash_reporter(func=None, fallback=SENTINEL):
 
 
 @crash_reporter
-def main(root=None, verbose=False):
+def main(root=None, verbose=False, download_only=False):
     """
     Runs the main checkstyle script and parses/redirects output
     """
@@ -141,6 +141,8 @@ def main(root=None, verbose=False):
         if result:
             print(ADDED_GITIGNORE_TEXT if mode == "add" else MODIFIED_GITIGNORE_TEXT)
 
+    if download_only:
+        return
     path = os.path.abspath(root) if root is not None else os.getcwd()
     files = find_files(path, JAVA_EXTENSION)
 
@@ -407,10 +409,12 @@ def bootstrap():
                         help="the path to run checkstyle over (defaults to current directory)")
     parser.add_argument("--verbose", "-v", action="store_true",
                         help="whether to display additional output")
+    parser.add_argument("--download-only", "-d", action="store_true",
+                        help="Whether to only download checkstyle JAR and XML resources")
 
     # Parse arguments
     parsed_args = parser.parse_args()
-    main(root=parsed_args.root, verbose=parsed_args.verbose)
+    main(root=parsed_args.root, verbose=parsed_args.verbose, download_only=parsed_args.download_only)
 
 
 # Run script
